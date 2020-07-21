@@ -6,7 +6,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
+import com.weison.csv.filter.UserCsvToBeanFilter;
 import com.weison.io.model.UserCsv;
+import com.weison.io.model.UserCsvFiler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -73,14 +75,16 @@ public class CsvTest {
     @Order(3)
     public void readCsv() throws IOException, CsvValidationException {
         File file = new File("./user21.csv");
-        List<UserCsv> csvData = readCsv(UserCsv.class, file);
+        //List<UserCsv> csvData = readCsv(UserCsv.class, file);
+        List<UserCsvFiler> csvData4 = readCsv(UserCsvFiler.class, file);
         Set<String> csvData1 = readCsv1(2, file);
         List<String[]> csvData2 = readCsv2(file);
         List<String> csvData3 = readCsv3(file);
-        log.info("-1->" + csvData);
+        //log.info("-1->" + csvData);
         log.info("-2->" + csvData1);
         log.info("-3->" + csvData2);
         log.info("-4->" + csvData3);
+        log.info("-5->" + csvData4);
     }
 
     public static <T> List<T> readCsv(Class<T> clazz, File file)
@@ -89,11 +93,14 @@ public class CsvTest {
         InputStreamReader in = new InputStreamReader(new FileInputStream(file), "gbk");
         HeaderColumnNameMappingStrategy<T> strategy = new HeaderColumnNameMappingStrategy<>();
         strategy.setType(clazz);
+        UserCsvToBeanFilter userCsvToBeanFilter = new UserCsvToBeanFilter();
 
         CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(in)
                 .withSeparator(',')
                 .withQuoteChar('\'')
-                .withMappingStrategy(strategy).build();
+                .withFilter(userCsvToBeanFilter)
+                .withMappingStrategy(strategy)
+                .build();
         List<T> list = csvToBean.parse();
         return list;
     }

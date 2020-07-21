@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class UserCsv implements Serializable {
 
-    @CsvBindByName(column = "name", required = true)
+    @CsvBindByName(column = "name", required = false)
     private String name;
     @CsvBindByName(column = "address", required = false)
     private String address;
