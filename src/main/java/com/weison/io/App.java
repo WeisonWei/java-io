@@ -1,4 +1,4 @@
-package com.weison;
+package com.weison.io;
 
 /**
  * Hello world!

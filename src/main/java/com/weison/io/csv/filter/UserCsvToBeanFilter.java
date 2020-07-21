@@ -1,10 +1,10 @@
-package com.weison.csv.filter;
+package com.weison.io.csv.filter;
 
 import com.opencsv.bean.CsvToBeanFilter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AliPayBillCsvToBeanFilter implements CsvToBeanFilter {
+public class UserCsvToBeanFilter implements CsvToBeanFilter {
     @Override
     public boolean allowLine(String[] line) {
         if (line.length > 0 && line[0].startsWith("#")) {

@@ -1,8 +1,8 @@
 package com.weison.io.csv;
 
 import com.opencsv.bean.*;
-import com.weison.csv.filter.AliPayBillCsvToBeanFilter;
-import com.weison.csv.filter.UserCsvToBeanFilter;
+import com.weison.io.csv.filter.AliPayBillCsvFilter;
+import com.weison.io.csv.filter.UserCsvToBeanFilter;
 import com.weison.io.model.AliPayBill;
 import com.weison.io.model.UserCsvFiler;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +75,7 @@ public class CsvFilterTest {
 
         CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(in)
                 .withSeparator(',')
-                .withFilter(new AliPayBillCsvToBeanFilter())
+                .withFilter(new AliPayBillCsvFilter())
                 .withQuoteChar('\'')
                 //.withSkipLines(6)
                 .withIgnoreLeadingWhiteSpace(true)
