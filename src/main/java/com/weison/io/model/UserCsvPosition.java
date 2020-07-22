@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 @ToString
 @Accessors(chain = true)
-public class UserCsvFiler implements Serializable {
+public class UserCsvPosition implements Serializable {
 
     @CsvBindByPosition(position = 0,required = false)
     private String name;

@@ -6,8 +6,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
-import com.weison.io.csv.filter.UserCsvToBeanFilter;
-import com.weison.io.model.UserCsvFiler;
+import com.weison.io.csv.filter.UserCsvFilter;
+import com.weison.io.model.UserCsvName;
+import com.weison.io.model.UserCsvPosition;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -74,12 +75,12 @@ public class CsvTest {
     @Order(3)
     public void readCsv() throws IOException, CsvValidationException {
         File file = new File("./user21.csv");
-        //List<UserCsv> csvData = readCsv(UserCsv.class, file);
-        List<UserCsvFiler> csvData4 = readCsv(UserCsvFiler.class, file);
+        List<UserCsvName> csvData = readCsv(UserCsvName.class, file);
+        List<UserCsvPosition> csvData4 = readCsv(UserCsvPosition.class, file);
         Set<String> csvData1 = readCsv1(2, file);
         List<String[]> csvData2 = readCsv2(file);
         List<String> csvData3 = readCsv3(file);
-        //log.info("-1->" + csvData);
+        log.info("-1->" + csvData);
         log.info("-2->" + csvData1);
         log.info("-3->" + csvData2);
         log.info("-4->" + csvData3);
@@ -92,12 +93,12 @@ public class CsvTest {
         InputStreamReader in = new InputStreamReader(new FileInputStream(file), "gbk");
         HeaderColumnNameMappingStrategy<T> strategy = new HeaderColumnNameMappingStrategy<>();
         strategy.setType(clazz);
-        UserCsvToBeanFilter userCsvToBeanFilter = new UserCsvToBeanFilter();
+        UserCsvFilter userCsvFilter = new UserCsvFilter();
 
         CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(in)
                 .withSeparator(',')
                 .withQuoteChar('\'')
-                .withFilter(userCsvToBeanFilter)
+                .withFilter(userCsvFilter)
                 .withMappingStrategy(strategy)
                 .build();
         List<T> list = csvToBean.parse();

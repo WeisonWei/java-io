@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 @ToString
 @Accessors(chain = true)
-public class UserCsv implements Serializable {
+public class UserCsvName implements Serializable {
 
     @CsvBindByName(column = "name", required = false)
     private String name;

@@ -2,9 +2,9 @@ package com.weison.io.csv;
 
 import com.opencsv.bean.*;
 import com.weison.io.csv.filter.AliPayBillCsvFilter;
-import com.weison.io.csv.filter.UserCsvToBeanFilter;
+import com.weison.io.csv.filter.UserCsvFilter;
 import com.weison.io.model.AliPayBill;
-import com.weison.io.model.UserCsvFiler;
+import com.weison.io.model.UserCsvPosition;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -27,24 +27,23 @@ public class CsvFilterTest {
     @Test
     @DisplayName("read CSV file")
     @Order(3)
-    public void readCsv() throws IOException {
+    public void readCsvFilter1() throws IOException {
         File file = new File("./user21.csv");
         FileInputStream fileInputStream = new FileInputStream(file);
         InputStreamReader reader = new InputStreamReader(fileInputStream);
-        List<UserCsvFiler> csvData4 = readUserCsv(UserCsvFiler.class, reader);
+        List<UserCsvPosition> csvData4 = readUserCsv(UserCsvPosition.class, reader);
         log.info("-4->" + csvData4);
     }
-
 
     public static <T> List<T> readUserCsv(Class<T> clazz, InputStreamReader in) {
         ColumnPositionMappingStrategy<T> strategy = new ColumnPositionMappingStrategy<>();
         strategy.setType(clazz);
-        UserCsvToBeanFilter userCsvToBeanFilter = new UserCsvToBeanFilter();
+        UserCsvFilter userCsvFilter = new UserCsvFilter();
 
         CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(in)
                 .withSeparator(',')
                 .withQuoteChar('\'')
-                .withFilter(userCsvToBeanFilter)
+                .withFilter(userCsvFilter)
                 .withIgnoreLeadingWhiteSpace(true)
                 .withMappingStrategy(strategy)
                 .build();
@@ -54,7 +53,7 @@ public class CsvFilterTest {
 
 
     @Test
-    public void testAliPayBill() throws Exception {
+    public void readCsvFilter2() throws Exception {
         FileInputStream fileIs = new FileInputStream("./weison.csv");
         try {
             InputStreamReader reader = new InputStreamReader(fileIs);
