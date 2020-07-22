@@ -29,13 +29,13 @@ public class ServerThread extends Thread {
             String info = null;
 
             while ((info = br.readLine()) != null) {
-                System.out.println("我是服务器，客户端说：" + info);
+                System.out.println("Time:" + System.currentTimeMillis() + " 我是服务器，客户端说：" + info);
             }
             socket.shutdownInput();
 
             os = socket.getOutputStream();
             pw = new PrintWriter(os);
-            pw.write("服务器欢迎你");
+            pw.write("Time:" + System.currentTimeMillis() + " 服务器欢迎你");
 
             pw.flush();
         } catch (Exception e) {
