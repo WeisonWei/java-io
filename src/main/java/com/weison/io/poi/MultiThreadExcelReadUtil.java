@@ -19,24 +19,29 @@ import java.util.concurrent.*;
 @Slf4j
 public abstract class MultiThreadExcelReadUtil<E> {
 
-    public abstract void process(List<E> entities);
+    //任务超时时间
+    private final int timeout = 5;
+    //任务超时时间单位
+    private final TimeUnit timeUnit = TimeUnit.MINUTES;
+    //读取Excel sheet索引页
+    private final int sheetIndex = 0;
+    //Excel读取起始行
+    private final int startRow = 1;
+    //处理线程数
+    private final int threadNum = 10;
+    //每次处理记录数
+    private final int rowNum = 100;
 
-    public abstract void handlerException(Exception e);
+    public abstract void process(List<E> entities);
 
     /**
      * 多线程Excel分批处理工具类
      *
-     * @param path       String Excel路径
-     * @param sheetIndex int 读取Excel sheet索引页
-     * @param startRow   int Excel读取起始行
-     * @param threadNum  int 处理线程数
-     * @param rowNum     int 每次处理记录数
-     * @param entity     Class<E> 实体
-     * @param timeout    int 任务超时时间
-     * @param timeUnit   TimeUnit 任务超时时间单位
+     * @param path   String Excel路径
+     * @param entity Class<E> 实体
      * @throws Exception
      */
-    public void read(String path, int sheetIndex, int startRow, int threadNum, int rowNum, Class<E> entity, int timeout, TimeUnit timeUnit) throws Exception {
+    public void read(String path, Class<E> entity) throws Exception {
         if (!path.endsWith("xlsx")) {
             new RuntimeException("导入程序不支持Excel早期版本仅支持2007");
         }
@@ -47,10 +52,10 @@ public abstract class MultiThreadExcelReadUtil<E> {
         try {
             Workbook workbook = StreamingReader.builder().rowCacheSize(100).bufferSize(4096).open(is);
             Sheet sheet = workbook.getSheetAt(sheetIndex);
-            List<E> entitys = new LinkedList<E>();
+            List<E> entitys = new LinkedList<>();
             ExecutorService poolProcess = Executors.newFixedThreadPool(threadNum);
             int batchIndex = 2;
-            List<Future<Boolean>> results = new ArrayList<Future<Boolean>>();
+            List<Future<Boolean>> results = new ArrayList<>();
             for (Row r : sheet) {
                 if ((batchIndex - 1) < startRow) {
                     batchIndex++;

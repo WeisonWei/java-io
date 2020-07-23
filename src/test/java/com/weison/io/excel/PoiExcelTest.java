@@ -24,12 +24,6 @@ public class PoiExcelTest {
                 }
                 log.info("------>" + users);
             }
-
-            @Override
-            public void handlerException(Exception e) {
-                log.error("用户数据导入异常信息", e);
-                throw new RuntimeException("读取数据出现问题", e);
-            }
         };
         util.read("./wxx.xlsx", 0, 2, 10, 100, UserExcelPoi.class, 5, TimeUnit.MINUTES);
     }

@@ -5,23 +5,17 @@ import java.util.concurrent.Callable;
 
 public class ProcessThread<E> implements Callable<Boolean> {
     private MultiThreadExcelReadUtil<E> cls;
-    private List<E> entitys;
+    private List<E> entities;
 
-    public ProcessThread(MultiThreadExcelReadUtil<E> cls, List<E> entitys) {
+    public ProcessThread(MultiThreadExcelReadUtil<E> cls, List<E> entities) {
         this.cls = cls;
-        this.entitys = entitys;
+        this.entities = entities;
     }
 
     @Override
-    public Boolean call() throws Exception {
-        try {
-            this.cls.process(this.entitys);
-            entitys.clear();
-            return true;
-        } catch (Exception e) {
-            this.cls.handlerException(e);
-
-        }
-        return false;
+    public Boolean call() {
+        this.cls.process(this.entities);
+        entities.clear();
+        return true;
     }
 }
