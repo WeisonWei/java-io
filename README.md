@@ -20,12 +20,12 @@ Java - IO -
 同步：调用发出后 -->  线程挂起,得到结果之后,线程结束;  
 异步：调用发出后 -->  指在不能立刻得到结果之前，该函数不会阻塞当前线程;  
 
-> 阻塞和同步是完全不同的概念。
-> [阻塞和同步](https://blog.csdn.net/z_ryan/article/details/80873449)
-> [阻塞和同步](https://www.jianshu.com/p/486b0965c296)
-> [阻塞和同步](https://www.cnblogs.com/cyyz-le/p/10962818.html)
-> [阻塞和同步](https://www.cnblogs.com/bakari/p/10966303.html)
-> [操作系统IO](https://juejin.im/post/5eeadd81e51d4573c91b90b0?utm_source=gold_browser_extension)
+> 阻塞和同步是完全不同的概念。  
+> [阻塞和同步](https://blog.csdn.net/z_ryan/article/details/80873449)  
+> [阻塞和同步](https://www.jianshu.com/p/486b0965c296)  
+> [阻塞和同步](https://www.cnblogs.com/cyyz-le/p/10962818.html)  
+> [阻塞和同步](https://www.cnblogs.com/bakari/p/10966303.html)  
+> [操作系统IO](https://juejin.im/post/5eeadd81e51d4573c91b90b0?utm_source=gold_browser_extension)  
 
 
 ## 3.Java IO
@@ -87,5 +87,6 @@ FilterInputStream 提升性能，读数据时，增加了buffer,容量是512的�
 StringBufferInputStream(@Deprecated) --> 这个类不能正确地将字符转换成字节  
 LineNumberInputStream(@Deprecated) --> 这个类错误地假设bytes能够足够表示characters  
 
-[参考](https://www.cnblogs.com/lighten/p/7063161.html)
+
+[参考](https://www.cnblogs.com/lighten/p/7063161.html)  
 [参考](https://www.bilibili.com/video/BV14J41177bY?p=8)
