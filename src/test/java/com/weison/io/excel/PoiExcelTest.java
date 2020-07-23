@@ -25,6 +25,6 @@ public class PoiExcelTest {
                 log.info("------>" + users);
             }
         };
-        util.read("./wxx.xlsx", 0, 2, 10, 100, UserExcelPoi.class, 5, TimeUnit.MINUTES);
+        //util.read("./wxx.xlsx", 0, 2, 10, 100, UserExcelPoi.class, 5, TimeUnit.MINUTES);
     }
 }
