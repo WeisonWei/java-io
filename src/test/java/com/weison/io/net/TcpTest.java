@@ -1,5 +1,9 @@
-package com.weison.io.socket;
+package com.weison.io.net;
 
+import com.weison.io.net.socket.TcpClient;
+import com.weison.io.net.socket.TcpServer;
+import com.weison.io.net.socket.UdpClient;
+import com.weison.io.net.socket.UdpServer;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;

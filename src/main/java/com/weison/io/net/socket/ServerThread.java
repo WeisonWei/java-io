@@ -1,4 +1,4 @@
-package com.weison.io.socket;
+package com.weison.io.net.socket;
 
 import java.io.*;
 import java.net.Socket;
