@@ -10,14 +10,18 @@ import java.io.IOException;
 
 public class FileTest {
 
-    public static void main(String[] args) {
-        File file = new File("weison.md");
-        boolean isFile = file.isFile();
-        //Assertions.assertEquals(isFile, true);
-    }
 
     @Test
     @Order(1)
+    @DisplayName("is文件")
+    public void isFile(String[] args) {
+        File file = new File("weison.md");
+        boolean isFile = file.isFile();
+        Assertions.assertEquals(isFile, true);
+    }
+
+    @Test
+    @Order(2)
     @DisplayName("创建文件")
     public void createFile() throws IOException {
         File file = new File("weison.md");
@@ -40,5 +44,12 @@ public class FileTest {
         Assertions.assertEquals(isFile, true);
         Assertions.assertEquals(isFile1, true);
         Assertions.assertEquals(isFile2, true);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("删除文件")
+    public void deleteFile() throws IOException {
+        FileOperations.deleteZipFiles();
     }
 }
