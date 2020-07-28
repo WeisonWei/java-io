@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ChatTest {
+public class NioTest {
 
     @Test
     public void chatTest() throws IOException, InterruptedException {

@@ -8,7 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class SocketTest {
+public class BioTest {
 
     @Test
     public void tcp() throws InterruptedException {
@@ -33,7 +33,6 @@ public class SocketTest {
         clientThread.start();
         countDownLatch.await(10, TimeUnit.SECONDS);
     }
-
 
     @Test
     public void tcpFile() throws InterruptedException {
