@@ -1,4 +1,6 @@
-package com.weison.io.net.socket;
+package com.weison.io.net.socket.bio;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -41,23 +43,13 @@ public class ServerThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            //关闭资源
-            try {
-                if (pw != null)
-                    pw.close();
-                if (os != null)
-                    os.close();
-                if (br != null)
-                    br.close();
-                if (isr != null)
-                    isr.close();
-                if (is != null)
-                    is.close();
-                if (socket != null)
-                    socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(pw);
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(br);
+            IOUtils.closeQuietly(isr);
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(isr);
+            IOUtils.closeQuietly(socket);
         }
     }
 

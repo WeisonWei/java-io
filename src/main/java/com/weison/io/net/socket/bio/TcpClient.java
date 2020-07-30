@@ -1,4 +1,4 @@
-package com.weison.io.net.socket;
+package com.weison.io.net.socket.bio;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,8 +1,11 @@
-package com.weison.io.net.socket;
+package com.weison.io.net.socket.bio;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
