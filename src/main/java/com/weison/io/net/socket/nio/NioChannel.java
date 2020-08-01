@@ -22,6 +22,7 @@ import java.util.Set;
  */
 public class NioChannel {
 
+
     /**
      * Java 为 Channel 接口提供的最主要实现类如下：
      * <p>
@@ -70,9 +71,12 @@ public class NioChannel {
 
 
     // 超时时间，单位毫秒
-    private static final int TimeOut = 3000;
+    private static final int TIME_OUT = 3000;
     // 本地监听端口
-    private static final int ListenPort = 1937;
+    private static final int LISTEN_PORT = 1937;
+
+    private static final int BUF_SIZE = 256;
+
 
     public void selector() throws IOException {
         // 创建选择器
@@ -82,7 +86,7 @@ public class NioChannel {
 
         // 与本地端口绑定
         ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress(ListenPort));
+        serverSocket.bind(new InetSocketAddress("localhost",LISTEN_PORT));
         // 设置为非阻塞模式
         serverSocketChannel.configureBlocking(false);
         // 将选择器绑定到监听信道,只有非阻塞信道才可以注册选择器.并在注册过程中指出该信道可以进行Accept操作
@@ -92,10 +96,10 @@ public class NioChannel {
         // 反复循环,等待IO
         while (true) {
             // 等待某信道就绪(或超时)
-            int keys = selector.select(TimeOut);
+            int keys = selector.select(TIME_OUT);
             //刚启动时连续输出0，client连接后一直输出1
             if (keys == 0) {
-                System.out.println("独自等待.");
+                System.out.print("超时等待...");
                 continue;
             }
 
@@ -107,17 +111,47 @@ public class NioChannel {
 
                 SelectionKey key = keyIterator.next();
                 if (key.isAcceptable()) {
-                    // a connection was accepted by a ServerSocketChannel.
-                    // 可通过Channel()方法获取就绪的Channel并进一步处理
-                    SocketChannel channel = (SocketChannel) key.channel();
-                    // TODO
+                    // 当 OP_ACCEPT 事件到来时, 我们就有从 ServerSocketChannel 中获取一个 SocketChannel,
+                    // 代表客户端的连接
+                    // 注意, 在 OP_ACCEPT 事件中, 从 key.channel() 返回的 Channel 是 ServerSocketChannel.
+                    // 而在 OP_WRITE 和 OP_READ 中, 从 key.channel() 返回的是 SocketChannel.
+                    SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();
+                    clientChannel.configureBlocking(false);
+                    //在 OP_ACCEPT 到来时, 再将这个 Channel 的 OP_READ 注册到 Selector 中.
+                    // 注意, 这里我们如果没有设置 OP_READ 的话, 即 interest set 仍然是 OP_CONNECT 的话, 那么 select 方法会一直直接返回.
+                    clientChannel.register(key.selector(), SelectionKey.OP_READ,
+                            ByteBuffer.allocate(BUF_SIZE));
 
-                } else if (key.isConnectable()) {
+                }
+
+
+                if (key.isConnectable()) {
                     // TODO
-                } else if (key.isReadable()) {
-                    // TODO
-                } else if (key.isWritable()) {
-                    // TODO
+                }
+
+                if (key.isReadable()) {
+                    SocketChannel clientChannel = (SocketChannel) key.channel();
+                    ByteBuffer buf = (ByteBuffer) key.attachment();
+                    long bytesRead = clientChannel.read(buf);
+                    if (bytesRead == -1) {
+                        clientChannel.close();
+                    } else if (bytesRead > 0) {
+                        key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                        System.out.println("Get data length: " + bytesRead);
+                    }
+                }
+
+                if (key.isValid() && key.isWritable()) {
+                    ByteBuffer buf = (ByteBuffer) key.attachment();
+                    buf.flip();
+                    SocketChannel clientChannel = (SocketChannel) key.channel();
+
+                    clientChannel.write(buf);
+
+                    if (!buf.hasRemaining()) {
+                        key.interestOps(SelectionKey.OP_READ);
+                    }
+                    buf.compact();
                 }
                 // 删除处理过的事件
                 keyIterator.remove();
