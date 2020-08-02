@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class FileOperations {
 
     public static void deleteZipFiles() {
-        String path = "/Users/admin/Documents/bill/2020-07-21";
+        String path = "./";
         File file = new File(path);
         List<String> list = FileUtil.listFileNames(file.getAbsolutePath());
         List<Boolean> collect = list
@@ -24,6 +24,6 @@ public class FileOperations {
                 })
                 .map(FileUtil::del)
                 .collect(Collectors.toList());
-        log.info("");
+        log.info("delete over");
     }
 }

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 public class NettyTest {
 
     @Test
-    public void nettyTcp() throws InterruptedException {
-
+    void nettyTcp() {
+        log.info("hello world");
     }
 
 }

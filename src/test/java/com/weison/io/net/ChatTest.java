@@ -1,19 +1,19 @@
 package com.weison.io.net;
 
-import com.weison.io.net.weichat.NioChatClient;
-import com.weison.io.net.weichat.NioChatServer;
-import com.weison.io.net.weichat.SocketChatClient;
-import com.weison.io.net.weichat.SocketChatServer;
+import com.weison.io.net.socket.weichat.NioChatClient;
+import com.weison.io.net.socket.weichat.NioChatServer;
+import com.weison.io.net.socket.weichat.SocketChatClient;
+import com.weison.io.net.socket.weichat.SocketChatServer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class NioTest {
+public class ChatTest {
 
     @Test
-    public void chatTest() throws IOException, InterruptedException {
+    void chatTest() throws IOException, InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(50);
         SocketChatClient chatClient = new SocketChatClient();
         SocketChatServer chatServer = new SocketChatServer();
@@ -30,7 +30,7 @@ public class NioTest {
     }
 
     @Test
-    public void nioChatTest() throws IOException, InterruptedException {
+    void nioChatTest() throws IOException {
         NioChatClient chatClient = new NioChatClient();
         NioChatServer chatServer = new NioChatServer();
         chatServer.start();

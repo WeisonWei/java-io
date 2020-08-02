@@ -17,7 +17,7 @@ public class NetTest {
      * @throws UnknownHostException
      */
     @Test
-    public void ip() throws InterruptedException, UnknownHostException {
+    void ip() throws UnknownHostException {
         InetAddress address = InetAddress.getByName("127.0.0.1");
         InetAddress address1 = InetAddress.getByName("localhost");
         InetAddress address2 = InetAddress.getByName("www.baidu.com");
@@ -34,16 +34,14 @@ public class NetTest {
         log.info("-4->" + new String(address3));
         log.info("-5->" + canonicalHostName);
         log.info("-6->" + hostName);
-
     }
 
     @Test
-    public void socketIp() throws InterruptedException, UnknownHostException {
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1",8080);
-        InetSocketAddress address1 = new InetSocketAddress("localhost",8080);
-        log.info("-1->" +address);
-        log.info("-2->" +address1);
-
+    void socketIp() {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8080);
+        InetSocketAddress address1 = new InetSocketAddress("localhost", 8080);
+        log.info("-1->" + address);
+        log.info("-2->" + address1);
     }
 
 }

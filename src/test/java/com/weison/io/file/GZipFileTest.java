@@ -16,7 +16,7 @@ public class GZipFileTest {
     @Test
     @DisplayName("gzip工具类压缩")
     @Order(1)
-    public void huToolGZip() {
+    void huToolGZip() {
         byte[] bytes = ZipUtil.gzip("123", "GBK");
         String str = ZipUtil.unGzip(bytes, "GBK");
         System.out.printf(str);
@@ -25,7 +25,7 @@ public class GZipFileTest {
     @Test
     @DisplayName("gzip压缩")
     @Order(2)
-    public void gZip() throws Exception {
+    void gZip() throws Exception {
         byte[] bytes = compress("123", "GBK");
         String str = unCompress(bytes);
         System.out.printf(str);
@@ -35,12 +35,12 @@ public class GZipFileTest {
      * 压缩字符串
      * https://www.cnblogs.com/xiaohanlin/p/12888396.html
      *
-     * @param str 待压缩的字符串
+     * @param str     待压缩的字符串
      * @param charset
      * @return 压缩后的字符串
      * @throws Exception 压缩过程中的异常
      */
-    public static byte[] compress(String str, String charset) throws Exception {
+    static byte[] compress(String str, String charset) throws Exception {
         if (str == null || str.length() == 0) {
             return null;
         }
@@ -61,7 +61,7 @@ public class GZipFileTest {
      * @return 解压后的字符串
      * @throws Exception 解压过程中的异常
      */
-    public static String unCompress(byte[] bytes) throws Exception {
+    static String unCompress(byte[] bytes) throws Exception {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayInputStream in = new ByteArrayInputStream(bytes);
              GZIPInputStream gunzip = new GZIPInputStream(in)) {

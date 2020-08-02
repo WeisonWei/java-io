@@ -11,31 +11,31 @@ import java.util.concurrent.TimeUnit;
 public class BioTest {
 
     @Test
-    public void tcp() throws InterruptedException {
+    void tcpSocketTest() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
-        TcpServer tcpServer = new TcpServer();
-        TcpClient tcpClient = new TcpClient();
-        Thread serverThread = new Thread(() -> tcpServer.start(countDownLatch));
-        Thread clientThread = new Thread(() -> tcpClient.send(countDownLatch));
+        TcpSocketServer tcpSocketServer = new TcpSocketServer();
+        TcpSocketClient tcpSocketClient = new TcpSocketClient();
+        Thread serverThread = new Thread(() -> tcpSocketServer.start(countDownLatch));
+        Thread clientThread = new Thread(() -> tcpSocketClient.send(countDownLatch));
         serverThread.start();
         clientThread.start();
         countDownLatch.await(10, TimeUnit.SECONDS);
     }
 
     @Test
-    public void udp() throws InterruptedException {
+    void udpSocketTest() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
-        UdpServer udpServer = new UdpServer();
-        UdpClient udpClient = new UdpClient();
-        Thread serverThread = new Thread(() -> udpServer.start(countDownLatch));
-        Thread clientThread = new Thread(() -> udpClient.send(countDownLatch));
+        UdpSocketServer udpSocketServer = new UdpSocketServer();
+        UdpSocketClient udpSocketClient = new UdpSocketClient();
+        Thread serverThread = new Thread(() -> udpSocketServer.start(countDownLatch));
+        Thread clientThread = new Thread(() -> udpSocketClient.send(countDownLatch));
         serverThread.start();
         clientThread.start();
         countDownLatch.await(10, TimeUnit.SECONDS);
     }
 
     @Test
-    public void tcpFile() throws InterruptedException {
+    void tcpFileTest() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
         TcpFileServer tcpServer = new TcpFileServer();
         TcpFileClient tcpClient = new TcpFileClient();
@@ -43,6 +43,6 @@ public class BioTest {
         Thread clientThread = new Thread(() -> tcpClient.sendFile(countDownLatch));
         serverThread.start();
         clientThread.start();
-        countDownLatch.await(10, TimeUnit.SECONDS);
+        countDownLatch.await(5, TimeUnit.SECONDS);
     }
 }

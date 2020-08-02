@@ -1,6 +1,8 @@
 package com.weison.io.net.socket.nio;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,7 +10,9 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,6 +24,7 @@ import java.util.Set;
  * Channel本身不存在数据，因此需要配合缓冲区进行传输。
  * https://baijiahao.baidu.com/s?id=1657880147579914448
  */
+@Slf4j
 public class NioChannel {
 
 
@@ -77,85 +82,122 @@ public class NioChannel {
 
     private static final int BUF_SIZE = 256;
 
+    public void selector(int port) {
+        try {
+            // 创建选择器
+            Selector selector = Selector.open();
+            // 打开监听信道
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 
-    public void selector() throws IOException {
-        // 创建选择器
-        Selector selector = Selector.open();
-        // 打开监听信道
-        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            // 与本地端口绑定
+            ServerSocket serverSocket = serverSocketChannel.socket();
+            serverSocket.bind(new InetSocketAddress("localhost", port));
+            // 设置为非阻塞模式
+            serverSocketChannel.configureBlocking(false);
+            // 将选择器绑定到监听信道,只有非阻塞信道才可以注册选择器.并在注册过程中指出该信道可以进行Accept操作
+            // 一个serversocket channel准备好接收新进入的连接称为“接收就绪”
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-        // 与本地端口绑定
-        ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress("localhost",LISTEN_PORT));
-        // 设置为非阻塞模式
-        serverSocketChannel.configureBlocking(false);
-        // 将选择器绑定到监听信道,只有非阻塞信道才可以注册选择器.并在注册过程中指出该信道可以进行Accept操作
-        // 一个serversocket channel准备好接收新进入的连接称为“接收就绪”
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            // 反复循环,等待IO
+            while (true) {
+                // 等待某信道就绪(或超时)
+                int keys = selector.select(TIME_OUT);
+                //刚启动时连续输出0，client连接后一直输出1
+                if (keys == 0) {
+                    System.out.print("超时等待...");
+                    continue;
+                }
 
-        // 反复循环,等待IO
-        while (true) {
-            // 等待某信道就绪(或超时)
-            int keys = selector.select(TIME_OUT);
-            //刚启动时连续输出0，client连接后一直输出1
-            if (keys == 0) {
-                System.out.print("超时等待...");
-                continue;
+                // 取得迭代器，遍历每一个注册的通道
+                Set<SelectionKey> selectionKeys = selector.selectedKeys();
+                Iterator<SelectionKey> keyIterator = selectionKeys.iterator();
+
+                while (keyIterator.hasNext()) {
+
+                    SelectionKey key = keyIterator.next();
+                    if (key.isAcceptable()) {
+                        // 当 OP_ACCEPT 事件到来时, 我们就有从 ServerSocketChannel 中获取一个 SocketChannel,
+                        // 代表客户端的连接
+                        // 注意, 在 OP_ACCEPT 事件中, 从 key.channel() 返回的 Channel 是 ServerSocketChannel.
+                        // 而在 OP_WRITE 和 OP_READ 中, 从 key.channel() 返回的是 SocketChannel.
+                        SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();
+                        clientChannel.configureBlocking(false);
+                        //在 OP_ACCEPT 到来时, 再将这个 Channel 的 OP_READ 注册到 Selector 中.
+                        // 注意, 这里我们如果没有设置 OP_READ 的话, 即 interest set 仍然是 OP_CONNECT 的话, 那么 select 方法会一直直接返回.
+                        clientChannel.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(BUF_SIZE));
+                    }
+
+
+                    if (key.isConnectable()) {
+                        // TODO
+                    }
+
+                    if (key.isReadable()) {
+                        SocketChannel clientChannel = (SocketChannel) key.channel();
+                        ByteBuffer buf = (ByteBuffer) key.attachment();
+                        long bytesRead = clientChannel.read(buf);
+                        if (bytesRead == -1) {
+                            clientChannel.close();
+                        } else if (bytesRead > 0) {
+                            key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                            log.info("Get data length: " + bytesRead);
+                        }
+                    }
+
+                    if (key.isValid() && key.isWritable()) {
+                        ByteBuffer buf = (ByteBuffer) key.attachment();
+                        buf.flip();
+                        SocketChannel clientChannel = (SocketChannel) key.channel();
+
+                        clientChannel.write(buf);
+
+                        if (!buf.hasRemaining()) {
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+                        buf.compact();
+                    }
+                    // 删除处理过的事件
+                    keyIterator.remove();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            // 取得迭代器，遍历每一个注册的通道
-            Set<SelectionKey> selectionKeys = selector.selectedKeys();
-            Iterator<SelectionKey> keyIterator = selectionKeys.iterator();
+    }
 
-            while (keyIterator.hasNext()) {
-
-                SelectionKey key = keyIterator.next();
-                if (key.isAcceptable()) {
-                    // 当 OP_ACCEPT 事件到来时, 我们就有从 ServerSocketChannel 中获取一个 SocketChannel,
-                    // 代表客户端的连接
-                    // 注意, 在 OP_ACCEPT 事件中, 从 key.channel() 返回的 Channel 是 ServerSocketChannel.
-                    // 而在 OP_WRITE 和 OP_READ 中, 从 key.channel() 返回的是 SocketChannel.
-                    SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();
-                    clientChannel.configureBlocking(false);
-                    //在 OP_ACCEPT 到来时, 再将这个 Channel 的 OP_READ 注册到 Selector 中.
-                    // 注意, 这里我们如果没有设置 OP_READ 的话, 即 interest set 仍然是 OP_CONNECT 的话, 那么 select 方法会一直直接返回.
-                    clientChannel.register(key.selector(), SelectionKey.OP_READ,
-                            ByteBuffer.allocate(BUF_SIZE));
-
-                }
-
-
-                if (key.isConnectable()) {
-                    // TODO
-                }
-
-                if (key.isReadable()) {
-                    SocketChannel clientChannel = (SocketChannel) key.channel();
-                    ByteBuffer buf = (ByteBuffer) key.attachment();
-                    long bytesRead = clientChannel.read(buf);
-                    if (bytesRead == -1) {
-                        clientChannel.close();
-                    } else if (bytesRead > 0) {
-                        key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-                        System.out.println("Get data length: " + bytesRead);
+    public void nioServer(int port) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        List<SocketChannel> socketChannels = new ArrayList<>();
+        try {
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.bind(new InetSocketAddress("localhost", port));
+            serverSocketChannel.configureBlocking(false);
+            while (true) {
+                for (SocketChannel channel : socketChannels) {
+                    int read = channel.read(byteBuffer);
+                    if (read > 0) {
+                        log.info("read---" + read);
+                        byteBuffer.flip();
+                        byte[] bytes = new byte[read];
+                        String str = new String(bytes, "UTF-8");
+                        log.info("--" + str);
+                        byteBuffer.flip();
+                    } else {
+                        socketChannels.remove(channel);
                     }
                 }
 
-                if (key.isValid() && key.isWritable()) {
-                    ByteBuffer buf = (ByteBuffer) key.attachment();
-                    buf.flip();
-                    SocketChannel clientChannel = (SocketChannel) key.channel();
-
-                    clientChannel.write(buf);
-
-                    if (!buf.hasRemaining()) {
-                        key.interestOps(SelectionKey.OP_READ);
-                    }
-                    buf.compact();
+                SocketChannel socketChannel = serverSocketChannel.accept();
+                if (socketChannel != null) {
+                    log.info("connect success");
+                    socketChannel.configureBlocking(false);
+                    socketChannels.add(socketChannel);
+                    log.info("add one socketChannel ,current size:" + socketChannels.size());
                 }
-                // 删除处理过的事件
-                keyIterator.remove();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

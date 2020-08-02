@@ -7,7 +7,7 @@ import java.net.DatagramSocket;
 import java.util.concurrent.CountDownLatch;
 
 @Slf4j
-public class UdpServer {
+public class UdpSocketServer {
 
     public static void start(CountDownLatch countDownLatch) {
         try {
@@ -17,7 +17,7 @@ public class UdpServer {
 
             // 创建socket并指定端口
             DatagramSocket socket = new DatagramSocket(8088);
-            log.info("Time:" + System.currentTimeMillis() + " UdpServer start" );
+            log.info("Time:" + System.currentTimeMillis() + " UdpSocketServer start" );
 
             // 接收socket客户端发送的数据。如果未收到会一致阻塞
             socket.receive(packet);

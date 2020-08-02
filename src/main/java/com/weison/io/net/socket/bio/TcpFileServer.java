@@ -16,7 +16,7 @@ public class TcpFileServer {
             // 创建服务端socket
             ServerSocket serverSocket = new ServerSocket(8088);
             // 创建客户端socket
-            log.info("Time:" + System.currentTimeMillis() + " TcpServer start" );
+            log.info("Time:" + System.currentTimeMillis() + " TcpSocketServer start" );
 
             //循环监听等待客户端的连接
             while (true) {

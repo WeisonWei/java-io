@@ -8,7 +8,7 @@ import java.net.InetAddress;
 import java.util.concurrent.CountDownLatch;
 
 @Slf4j
-public class UdpClient {
+public class UdpSocketClient {
 
     public static void send(CountDownLatch countDownLatch) {
         try {
@@ -24,7 +24,7 @@ public class UdpClient {
 
             // 创建Socket对象
             DatagramSocket socket = new DatagramSocket();
-            log.info("Time:" + System.currentTimeMillis() + " UdpClient start" );
+            log.info("Time:" + System.currentTimeMillis() + " UdpSocketClient start" );
 
             // 发送消息到服务器
             socket.send(packet);

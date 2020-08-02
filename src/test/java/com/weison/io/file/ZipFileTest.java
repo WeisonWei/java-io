@@ -32,7 +32,7 @@ public class ZipFileTest {
     @Test
     @DisplayName("zip工具类压缩")
     @Order(1)
-    public void huToolZip() {
+    void huToolZip() {
         File zip = ZipUtil.zip("../../user21.csv", "../../user-2020-07-11.zip");
     }
 
@@ -44,7 +44,7 @@ public class ZipFileTest {
     @Test
     @DisplayName("zip原生类压缩")
     @Order(2)
-    public void zip() throws IOException {
+    void zip() throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream("user-2020-07-12.zip");
         ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
@@ -100,19 +100,19 @@ public class ZipFileTest {
     @Test
     @DisplayName("zip工具类un压缩")
     @Order(4)
-    public void huToolUnZip() {
+    void huToolUnZip() {
         File zip = ZipUtil.unzip("../../user-2020-07-12.zip");
     }
 
     @Test
     @DisplayName("zip工具类un压缩")
     @Order(4)
-    public void unZip() throws IOException {
+    void unZip() throws IOException {
         FileInputStream fileInputStream = new FileInputStream("./user-2020-07-12.zip");
         ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
 
-        byte doc[] = null;
-        ZipEntry nextEntry = null;
+        byte doc[];
+        ZipEntry nextEntry;
         while ((nextEntry = zipInputStream.getNextEntry()) != null &&
                 !nextEntry.isDirectory()) {
             File file = new File("./" + nextEntry.getName());
@@ -134,8 +134,6 @@ public class ZipFileTest {
                         out.write(doc, 0, n);
                     }
                     out.close();
-                    out = null;
-                    doc = null;
                 } catch (Exception ex) {
                     System.out.println("there is a problem");
                 }

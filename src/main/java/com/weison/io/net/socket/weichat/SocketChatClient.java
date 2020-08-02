@@ -1,21 +1,19 @@
-package com.weison.io.net.weichat;
-
-import lombok.extern.slf4j.Slf4j;
+package com.weison.io.net.socket.weichat;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 
-@Slf4j
-public class NioChatClient {
+public class SocketChatClient {
 
-    public void sendMessage() throws IOException {
-        Socket socket = new Socket("localhost", 8000);
-        new Thread(() -> sendMsg(socket)).start();
+    public void sendMessage(CountDownLatch countDownLatch) throws IOException {
+        Socket socket = new Socket("localhost", 6666);
+        new Thread(() -> sendMsg(socket, countDownLatch)).start();
     }
 
-    private void sendMsg(Socket socket) {
+    private void sendMsg(Socket socket, CountDownLatch countDownLatch) {
         OutputStream outputStream = null;
         OutputStreamWriter outputStreamWriter = null;
         try {
@@ -28,6 +26,7 @@ public class NioChatClient {
         } finally {
             try {
                 outputStreamWriter.close();
+                countDownLatch.countDown();
             } catch (IOException e) {
                 e.printStackTrace();
             }

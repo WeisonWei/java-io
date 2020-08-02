@@ -6,18 +6,25 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class NioChannelTest {
+class NioChannelTest {
 
     @Test
-    public void readFileTest() throws IOException {
+    void fileChannelTest() throws IOException {
         NioChannel nioChannel = new NioChannel();
         nioChannel.readFile();
     }
 
     @Test
-    public void socketTest() throws IOException {
+    void socketChannelTest() {
         NioChannel nioChannel = new NioChannel();
-        nioChannel.selector();
-        SocketUtil.sendMessage("localhost", 1937, "Hello ErBao~,I'm dad~");
+        new Thread(() -> nioChannel.nioServer(6666)).start();
+        new Thread(() -> SocketUtil.sendMessage("localhost", 6666, "Hello ErBao~,I'm dad~")).start();
+    }
+
+    @Test
+    void socketChannelSelectorTest() {
+        NioChannel nioChannel = new NioChannel();
+        new Thread(() -> nioChannel.selector(6666)).start();
+        new Thread(() -> SocketUtil.sendMessage("localhost", 6666, "Hello ErBao~,I'm dad~")).start();
     }
 }

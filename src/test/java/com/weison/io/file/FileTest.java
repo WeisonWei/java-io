@@ -14,7 +14,7 @@ public class FileTest {
     @Test
     @Order(1)
     @DisplayName("is文件")
-    public void isFile(String[] args) {
+    void isFile() {
         File file = new File("weison.md");
         boolean isFile = file.isFile();
         Assertions.assertEquals(isFile, true);
@@ -23,22 +23,22 @@ public class FileTest {
     @Test
     @Order(2)
     @DisplayName("创建文件")
-    public void createFile() throws IOException {
+    void createFile() throws IOException {
         File file = new File("weison.md");
-        boolean b = file.canExecute();
-        boolean newFile = file.createNewFile();
+        file.canExecute();
+        file.createNewFile();
         boolean isFile = file.isFile();
 
         File file1 = new File("./weison1.md");
-        boolean b1 = file1.canExecute();
-        boolean newFile1 = file1.createNewFile();
+        file1.canExecute();
+        file1.createNewFile();
         boolean isFile1 = file1.isFile();
 
         File path = new File("files");
-        boolean mkdir = path.mkdir();
+        path.mkdir();
         File file2 = new File(path, "weison2.md");
-        boolean b2 = file2.canExecute();
-        boolean newFile2 = file2.createNewFile();
+        file2.canExecute();
+        file2.createNewFile();
         boolean isFile2 = file2.isFile();
 
         Assertions.assertEquals(isFile, true);
@@ -49,7 +49,7 @@ public class FileTest {
     @Test
     @Order(2)
     @DisplayName("删除文件")
-    public void deleteFile() throws IOException {
+    void deleteFile() {
         FileOperations.deleteZipFiles();
     }
 }

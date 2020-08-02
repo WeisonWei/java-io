@@ -1,4 +1,4 @@
-package com.weison.io.net.weichat;
+package com.weison.io.net.socket.weichat;
 
 import lombok.extern.slf4j.Slf4j;
 
