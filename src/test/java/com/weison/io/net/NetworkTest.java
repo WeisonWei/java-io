@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 @Slf4j
-public class NetTest {
+public class NetworkTest {
 
     /**
      * https://www.bilibili.com/video/BV1LJ411z7vY?p=4

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-class NioChannelTest {
+class NioTest {
 
     @Test
     void fileChannelTest() throws IOException {
