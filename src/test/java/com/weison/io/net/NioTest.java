@@ -11,7 +11,7 @@ class NioTest {
     @Test
     void fileChannelTest() throws IOException {
         NioChannel nioChannel = new NioChannel();
-        nioChannel.readFile();
+        nioChannel.fileChannel();
     }
 
     @Test

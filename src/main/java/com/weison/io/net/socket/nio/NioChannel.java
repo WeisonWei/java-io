@@ -27,7 +27,6 @@ import java.util.Set;
 @Slf4j
 public class NioChannel {
 
-
     /**
      * Java 为 Channel 接口提供的最主要实现类如下：
      * <p>
@@ -38,10 +37,10 @@ public class NioChannel {
      *
      * @throws IOException
      */
-    public void readFile() throws IOException {
+    public void fileChannel() throws IOException {
 
         String inPath = "./user.md";
-        String outPath = "./user1.md";
+        String outPath = "./user.t";
         // 获取源文件和目标文件的输入输出流
         FileInputStream fileInputStream = new FileInputStream(inPath);
         FileOutputStream fileOutputStream = new FileOutputStream(outPath);
@@ -73,7 +72,6 @@ public class NioChannel {
         fileInputStream.close();
         fileOutputStream.close();
     }
-
 
     // 超时时间，单位毫秒
     private static final int TIME_OUT = 3000;

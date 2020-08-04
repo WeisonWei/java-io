@@ -7,22 +7,14 @@ import java.net.Socket;
 public class SocketUtil {
 
     public static void sendMessage(String host, int port, String message) {
-        Socket socket = null;
-        try {
-            socket = new Socket(host, port);
+        try (Socket socket = new Socket(host, port)) {
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(message.getBytes("UTF-8"));
             outputStream.flush();
             outputStream.close();
+            socket.shutdownOutput();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.shutdownOutput();
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
