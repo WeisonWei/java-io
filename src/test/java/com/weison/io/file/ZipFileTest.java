@@ -33,7 +33,7 @@ public class ZipFileTest {
     @DisplayName("zip工具类压缩")
     @Order(1)
     void huToolZip() {
-        File zip = ZipUtil.zip("../../user21.csv", "../../user-2020-07-11.zip");
+        File zip = ZipUtil.zip("../../user.csv", "../../user-2020-07-11.zip");
     }
 
     /**
@@ -49,11 +49,11 @@ public class ZipFileTest {
         ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
 
-        FileInputStream fileInputStream = new FileInputStream("user21.csv");
+        FileInputStream fileInputStream = new FileInputStream("user.csv");
         BufferedInputStream bis = new BufferedInputStream(fileInputStream);
 
         byte[] bytes = new byte[1024];
-        ZipEntry zipEntry = new ZipEntry("./user21.csv");
+        ZipEntry zipEntry = new ZipEntry("./user.csv");
         zipOutputStream.putNextEntry(zipEntry);
         int len;
         while ((len = bis.read(bytes, 0, bytes.length)) != -1) {

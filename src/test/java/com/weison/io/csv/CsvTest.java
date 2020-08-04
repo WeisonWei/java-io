@@ -54,7 +54,7 @@ public class CsvTest {
     @DisplayName("create CSV file2")
     @Order(3)
     public void createCsvOriginal1() throws IOException {
-        File file = new File("./user21.csv");
+        File file = new File("./user.csv");
         OutputStream outputStream = new FileOutputStream(file);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
         BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
@@ -74,7 +74,7 @@ public class CsvTest {
     @DisplayName("read CSV file")
     @Order(3)
     public void readCsv() throws IOException, CsvValidationException {
-        File file = new File("./user21.csv");
+        File file = new File("./user.csv");
         List<UserCsvName> csvData = readCsv(UserCsvName.class, file);
         List<UserCsvPosition> csvData4 = readCsv(UserCsvPosition.class, file);
         Set<String> csvData1 = readCsv1(2, file);

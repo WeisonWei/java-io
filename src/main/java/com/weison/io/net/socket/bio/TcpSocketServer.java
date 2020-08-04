@@ -21,10 +21,11 @@ public class TcpSocketServer {
              Socket socket = new Socket()) {
             log.info("Time:" + System.currentTimeMillis() + " TcpSocketServer start");
             //循环监听等待客户端的连接
-            do {
+            while (true) {
                 // 监听客户端
-                new Thread(() -> acceptAndReadClient(serverSocket)).start();
-            } while (true);
+                Socket accept = serverSocket.accept();
+                new Thread(() -> acceptAndReadClient(accept)).start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -32,10 +33,9 @@ public class TcpSocketServer {
         }
     }
 
-    private void acceptAndReadClient(ServerSocket serverSocket) {
+    private void acceptAndReadClient(Socket socket) {
 
         try (
-                Socket socket = serverSocket.accept();
                 OutputStream os = socket.getOutputStream();
                 PrintWriter pw = new PrintWriter(os);
                 InputStream is = socket.getInputStream();
@@ -57,6 +57,13 @@ public class TcpSocketServer {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

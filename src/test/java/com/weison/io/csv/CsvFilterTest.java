@@ -28,7 +28,7 @@ public class CsvFilterTest {
     @DisplayName("read CSV file")
     @Order(3)
     public void readCsvFilter1() throws IOException {
-        File file = new File("./user21.csv");
+        File file = new File("./user.csv");
         FileInputStream fileInputStream = new FileInputStream(file);
         InputStreamReader reader = new InputStreamReader(fileInputStream);
         List<UserCsvPosition> csvData4 = readUserCsv(UserCsvPosition.class, reader);
