@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.ArrayList;
@@ -80,21 +79,20 @@ public class NioChannel {
 
     private static final int BUF_SIZE = 256;
 
-    public void selector(int port) {
+    public void selector(String host, int port) {
         try {
             // 创建选择器
             Selector selector = Selector.open();
             // 打开监听信道
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-
             // 与本地端口绑定
-            ServerSocket serverSocket = serverSocketChannel.socket();
-            serverSocket.bind(new InetSocketAddress("localhost", port));
+            serverSocketChannel.socket().bind(new InetSocketAddress(host, port));
             // 设置为非阻塞模式
             serverSocketChannel.configureBlocking(false);
             // 将选择器绑定到监听信道,只有非阻塞信道才可以注册选择器.并在注册过程中指出该信道可以进行Accept操作
             // 一个serversocket channel准备好接收新进入的连接称为“接收就绪”
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            log.info("serverSocketChannel 等待就绪channel...");
 
             // 反复循环,等待IO
             while (true) {
@@ -102,7 +100,7 @@ public class NioChannel {
                 int keys = selector.select(TIME_OUT);
                 //刚启动时连续输出0，client连接后一直输出1
                 if (keys == 0) {
-                    System.out.print("超时等待...");
+                    log.info("超时等待...");
                     continue;
                 }
 
@@ -114,6 +112,7 @@ public class NioChannel {
 
                     SelectionKey key = keyIterator.next();
                     if (key.isAcceptable()) {
+                        log.info("isAcceptable...");
                         // 当 OP_ACCEPT 事件到来时, 我们就有从 ServerSocketChannel 中获取一个 SocketChannel,
                         // 代表客户端的连接
                         // 注意, 在 OP_ACCEPT 事件中, 从 key.channel() 返回的 Channel 是 ServerSocketChannel.
@@ -127,10 +126,12 @@ public class NioChannel {
 
 
                     if (key.isConnectable()) {
+                        log.info("isConnectable...");
                         // TODO
                     }
 
                     if (key.isReadable()) {
+                        log.info("isReadable...");
                         SocketChannel clientChannel = (SocketChannel) key.channel();
                         ByteBuffer buf = (ByteBuffer) key.attachment();
                         long bytesRead = clientChannel.read(buf);
@@ -143,6 +144,7 @@ public class NioChannel {
                     }
 
                     if (key.isValid() && key.isWritable()) {
+                        log.info("isValid isWritable...");
                         ByteBuffer buf = (ByteBuffer) key.attachment();
                         buf.flip();
                         SocketChannel clientChannel = (SocketChannel) key.channel();
@@ -164,12 +166,12 @@ public class NioChannel {
 
     }
 
-    public void nioServer(int port) {
+    public void nioServer(String host, int port) {
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
         List<SocketChannel> socketChannels = new ArrayList<>();
         try {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.bind(new InetSocketAddress("localhost", port));
+            serverSocketChannel.bind(new InetSocketAddress(host, port));
             serverSocketChannel.configureBlocking(false);
             while (true) {
                 for (SocketChannel channel : socketChannels) {
